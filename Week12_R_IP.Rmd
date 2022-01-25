@@ -1,0 +1,167 @@
+---
+title: "R_week12_IP"
+author: "Stephen Njuguna"
+date: "1/22/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Cyrptography Course
+
+## Defining the question 
+Identify which individuals are most likely to click on cyrptography course ads. 
+
+## Defining the metric for success
+Being able to identify the individuals that are likely to click on the adds
+
+## Understanding the context
+With targeted advertising, you target your ad campaigns at an specific audience, based on (for example) demographics, location, interests or behaviors. Based on these traits, you'll be able to create more personalized ads that resonate with your target audiences and lead to higher conversion rates
+
+## Experimental design
+ * Data Cleaning and Preparation
+ * Deal with missing values
+ * Deal with duplicated records
+  * Univariate Analysis
+  * Bivariate Analysis
+  * Conclusion
+  * Recommendation
+
+## Read Our Dataset
+  
+```{r}
+#Loading the Dataset
+ad_dataset <- read.csv('http://bit.ly/IPAdvertisingData')
+
+#Previewing the Datset 
+head(ad_dataset)
+
+```
+```{r}
+#Checking for data types
+str(ad_dataset)
+```
+
+
+```{r}
+# Checking the dimensions of our dataset
+dim(ad_dataset)
+```
+## Data Cleaning 
+```{r}
+# Checking for null values
+colSums(is.na(ad_dataset))
+```
+```{r}
+# Checking for duplicates
+duplicated_rows <- ad_dataset[duplicated(ad_dataset),]
+
+duplicated_rows
+```
+```{r}
+#Checking for outliers 
+#select all numeric columns 
+numeric_df <- ad_dataset[c(1,2,3,4,7,10)]
+invisible(lapply(1:ncol(numeric_df), function(i) boxplot(numeric_df[, i])))
+
+
+
+```
+
+
+We have outliers in  the area income variable but upon further 
+investigations its because some people earn very low income 
+
+## Exploratory Data Analysis
+
+### Univeriate Analysis
+```{r}
+#Checking the statistical summary.
+summary(numeric_df)
+
+```
+```{r}
+#Viewing the ratio of click on ad 
+a <- table(numeric_df$Clicked.on.Ad)
+piepercent<- round(100 * a / sum(a), 1)
+pie(a, labels = piepercent,
+    main = "Click on ad pie chart", col = rainbow(length(a)))
+```
+
+
+We have equal mumber of people who clicked on ads
+
+```{r}
+#To view gender distribution
+gender <- table(numeric_df$Male)
+barplot(gender)
+```
+
+
+Females are more than males
+
+```{r}
+# Previewing the customer age distribution 
+Age <- table(ad_dataset$Age)
+hist(Age)
+```
+
+
+Most of the people who click on ads are between the ages of 20 and 40
+
+## BIVARIATE ANALYSIS
+
+```{r}
+#Plotting a heat map to show correlation between the different variables
+
+corr<-cor(numeric_df)
+corrplot::corrplot(corr, method="number")
+
+```
+
+
+Some observation:
+ * Daily time spend on site has a positive strong correlation with internet 
+    usage.
+ * Click on ads as a strong negative correlation with time spent on 
+   site.
+
+
+```{r}
+# Creating the scatter plot using age and time spend on site
+age <- numeric_df$Age
+time_spent <- numeric_df$Daily.Time.Spent.on.Site
+plot(age, time_spent, xlab="Age", ylab="Time spent onn site")
+```
+
+
+Age and time spent on site have a strong correlation 
+
+```{r}
+#Creating the scatter plot using age and Area income
+income <- numeric_df$Area.Income
+plot(age, income, xlab="Age", ylab="Area Income")
+
+```
+
+
+Area income has a strong correlation to age
+
+## Conclusion 
+ * People who are more likely to click on the ads are between the age of 19 
+  and 40.
+ * Females are more likely to click on ads
+ * People who spend more time using internet are more likely to click on ads.
+
+
+## Recommendations 
+cryptograph :
+
+ * Should target people between the age of 19 and 40 for their ad campaign.
+ * Should target females more than males during the campaign.
+ * Should target people who spend more time using the internet.
+
+
